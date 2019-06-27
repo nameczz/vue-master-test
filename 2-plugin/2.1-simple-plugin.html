@@ -1,9 +1,28 @@
 <script src="../node_modules/vue/dist/vue.js"></script>
 
 <script>
-const RulesPlugin = {
-  // Implement this!
-}
+  const RulesPlugin = {
+    // Implement this!
+    install(Vue, options) {
+      Vue.mixin({
+        created() {
+          if (this.$options.rules) {
+            // this.$options 可以拿到自定义的属性
+            // console.log(this.$options.rules)
+            Object.keys(this.$options.rules).forEach(key => {
+              let rule = this.$options.rules[key]
+              this.$watch(key, newValue => {
+                let ret = rule.validate(newValue)
+                if (!ret) {
+                  console.log(rule.message)
+                }
+              })
+            })
+          }
+        }
+      })
+    }
+  }
 
-Vue.use(RulesPlugin)
+  Vue.use(RulesPlugin)
 </script>

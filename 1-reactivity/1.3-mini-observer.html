@@ -1,9 +1,46 @@
 <script>
-function observe (obj) {
-  // Implement this!
-}
+  let activeUpdate = null
+  class Dep {
+    constructor() {
+      this.subscribes = new Set()
+    }
 
-function autorun (update) {
-  // Implement this!
-}
+    depend() {
+      if (activeUpdate) {
+        this.subscribes.add(activeUpdate)
+      }
+    }
+
+    notify() {
+      this.subscribes.forEach(sub => sub())
+    }
+  }
+  let dep = new Dep()
+
+  function observe(obj) {
+    // Implement this!
+    Object.keys(obj).forEach(k => {
+      let value = obj[k]
+      Object.defineProperty(obj, k, {
+        get() {
+          dep.depend()
+          return value
+        },
+        set(newVal) {
+          value = newVal
+          dep.notify()
+        }
+      })
+    })
+  }
+
+  function autorun(update) {
+    // Implement this!
+    function wrapperUpdate() {
+      activeUpdate = update
+      update()
+      update = null
+    }
+    wrapperUpdate()
+  }
 </script>

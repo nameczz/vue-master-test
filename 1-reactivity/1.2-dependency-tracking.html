@@ -1,11 +1,31 @@
 <script>
-// a class representing a dependency
-// exposing it on window is necessary for testing
-window.Dep = class Dep {
-  // Implement this!
-}
+  let activeUpdate = null
+  // a class representing a dependency
+  // exposing it on window is necessary for testing
+  window.Dep = class Dep {
+    // Implement this!
+    constructor() {
+      this.subsribes = new Set()
+    }
 
-function autorun (update) {
-  // Implement this!
-}
+    depend() {
+      if (activeUpdate) {
+        this.subsribes.add(activeUpdate)
+      }
+    }
+
+    notify() {
+      this.subsribes.forEach(sub => sub())
+    }
+  }
+
+  function autorun(update) {
+    // Implement this!
+    function wrapperUpdate() {
+      activeUpdate = update
+      update()
+      activeUpdate = null
+    }
+    wrapperUpdate()
+  }
 </script>
