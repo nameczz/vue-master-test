@@ -1,31 +1,55 @@
 <script src="../node_modules/vue/dist/vue.js"></script>
 <script>
-// goal:
-// - display foo when url is at #foo
-// - display bar when url is at #bar
-// - bonus: implement links that navigate between #foo and #bar
+  // goal:
+  // - display foo when url is at #foo
+  // - display bar when url is at #bar
+  // - bonus: implement links that navigate between #foo and #bar
 
-// to access the current hash:
-window.location.hash
-// to listen for hash changes:
-window.addEventListener('hashchange', () => {
-  // read hash and update app
-})
+  // to access the current hash:
+  window.location.hash
+  // to listen for hash changes:
+  window.addEventListener('hashchange', () => {
+    // read hash and update app
+  })
 </script>
 
 <div id="app">
   <!-- render main view here -->
+  <component :is="url"></component>
   <a href="#foo">foo</a>
   <a href="#bar">bar</a>
 </div>
 
 <script>
-window.addEventListener('hashchange', () => {
-  // Implement this!
-})
+  window.addEventListener('hashchange', e => {
+    // Implement this!
+    let hash = window.location.hash.slice(1)
+    console.log(app.url)
+    app.url = hash
+  })
+  const Foo = {
+    render(h) {
+      return h('div', 'Foo Hash')
+    }
+  }
+  const Bar = {
+    render(h) {
+      return h('div', 'Bar Hash')
+    }
+  }
 
-const app = new Vue({
-  el: '#app',
-  // Implement this!
-})
+  const app = new Vue({
+    el: '#app',
+    data: {
+      url: window.location.hash.slice(1)
+    },
+    components: {
+      foo: { template: '<div>foor</div>' },
+      bar: { template: '<div>bar</div>' }
+    }
+    // Implement this!
+    // render(h) {
+    //   return this.type === 'foo' ? h(Foo) : h(Bar)
+    // }
+  })
 </script>

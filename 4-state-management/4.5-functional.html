@@ -3,24 +3,50 @@
 <div id="app"></div>
 
 <script>
-function createApp ({ el, model, view, actions }) {
-  // Implement this!
-}
+  function createApp({ el, model, view, actions }) {
+    const wrapperActions = {}
+    Object.keys(actions).forEach(k => {
+      let originAction = actions[k]
+      wrapperActions[k] = () => {
+        console.log(vm)
+        let newModel = originAction(vm.model)
+        vm.model = newModel
+      }
+    })
+    // Implement this!
+    const vm = new Vue({
+      el,
+      data() {
+        return {
+          model
+        }
+      },
+      methods: {
+        inc: ({ count }) => ({ count: count + 1 }),
+        dec: ({ count }) => ({ count: count - 1 })
+      },
+      render(h) {
+        return view(h, this.model, wrapperActions)
+      }
+    })
+  }
 
-// voila
-createApp({
-  el: '#app',
-  model: {
-    count: 0
-  },
-  actions: {
-    inc: ({ count }) => ({ count: count + 1 }),
-    dec: ({ count }) => ({ count: count - 1 })
-  },
-  view: (h, model, actions) => h('div', { attrs: { id: 'app' }}, [
-    model.count, ' ',
-    h('button', { on: { click: actions.inc }}, '+'),
-    h('button', { on: { click: actions.dec }}, '-')
-  ])
-})
+  // voila
+  createApp({
+    el: '#app',
+    model: {
+      count: 0
+    },
+    actions: {
+      inc: ({ count }) => ({ count: count + 1 }),
+      dec: ({ count }) => ({ count: count - 1 })
+    },
+    view: (h, model, actions) =>
+      h('div', { attrs: { id: 'app' } }, [
+        model.count,
+        ' ',
+        h('button', { on: { click: actions.inc } }, '+'),
+        h('button', { on: { click: actions.dec } }, '-')
+      ])
+  })
 </script>
